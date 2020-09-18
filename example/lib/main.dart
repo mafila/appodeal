@@ -51,20 +51,26 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Appodeal Example App'),
-          ),
-          body: isAppodealInitialized ? _Body() : Container()),
+      home: isAppodealInitialized ? _FirstScreen() : Container(),
+      routes: {
+        '/first': (_) => _FirstScreen(),
+        '/second': (_) => _SecondScreen()
+      },
     );
   }
 }
 
-class _Body extends StatelessWidget {
+class _FirstScreen extends StatefulWidget {
+  @override
+  __FirstScreenState createState() => __FirstScreenState();
+}
+
+class __FirstScreenState extends State<_FirstScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Center(
+    return Scaffold(
+      appBar: AppBar(title: Text('Appodeal Example App')),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -74,7 +80,7 @@ class _Body extends StatelessWidget {
                 var shouldShow = await Appodeal.shouldShowConsent();
 
                 Toast.show('The app should${shouldShow ? ' ' : ' NOT '}collect user consent', context,
-                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               },
             ),
 
@@ -84,7 +90,7 @@ class _Body extends StatelessWidget {
                 var consent = await Appodeal.fetchConsentInfo();
 
                 Toast.show('Status: ${consent.status}; Zone: ${consent.zone}', context,
-                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               },
             ),
 
@@ -100,7 +106,7 @@ class _Body extends StatelessWidget {
               onPressed: () async {
                 var isLoaded = await Appodeal.isLoaded(AdType.INTERSTITIAL);
                 Toast.show(isLoaded ? 'Interstitial ad is loaded' : 'Interstitial ad is NOT loaded', context,
-                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               },
             ),
 
@@ -116,7 +122,7 @@ class _Body extends StatelessWidget {
               onPressed: () async {
                 var isLoaded = await Appodeal.isLoaded(AdType.REWARD);
                 Toast.show(isLoaded ? 'Reward ad is loaded' : 'Reward ad is NOT loaded', context,
-                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               },
             ),
 
@@ -133,7 +139,7 @@ class _Body extends StatelessWidget {
               onPressed: () async {
                 var isLoaded = await Appodeal.isLoaded(AdType.NON_SKIPPABLE);
                 Toast.show(isLoaded ? 'Non-Skippable ad is loaded' : 'No-Skippable ad is NOT loaded', context,
-                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               },
             ),
 
@@ -144,6 +150,39 @@ class _Body extends StatelessWidget {
                 print(status);
               },
             ),
+
+            RaisedButton(
+              child: Text('New Screen'),
+              onPressed: () async {
+                Navigator.pushNamed(context, '/second');
+              },
+            ),
+
+            RaisedButton(
+              child: Text('Show banner'),
+              onPressed: () async {
+                await Appodeal.show(AdType.BANNER);
+              },
+            ),
+
+            AppodealBanner()
+          ],
+        ),
+      )
+    );
+  }
+}
+
+class _SecondScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Second Screen')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text('Banner, banner, banner...'),
 
             AppodealBanner()
           ],
